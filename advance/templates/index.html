@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/fontAwesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/sweetalert/sweetalert.css">
+
+</head>
+<body>
+<h3>简易计算</h3>
+<p>
+    <input type="text" id="i1">+
+    <input type="text" id="i2">=
+    <input type="text" id="i3">
+    <button id="b1">提交</button>
+</p>
+
+<p>
+<h3>登录验证</h3>
+</p>
+<p>
+    <label>用户名
+        <input type="text" id="i4">
+        <span id="p1"></span>
+    </label>
+    <label>
+        <button id="b2">
+            注册
+        </button>
+    </label>
+</p>
+<script src="/static/jquery-3.2.1.min.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/sweetalert/sweetalert.min.js"></script>
+<script src="/static/setupajax.js"></script>
+
+<script>
+    $("#b1").on("click", function () {
+        var i1 = $("#i1").val()
+        var i2 = $("#i2").val()
+        $.ajax({
+                url: '/index/',
+                type: 'post',
+                data: {"i1": i1, "i2": i2},
+                success: function (arg) {
+                    $("#i3").val(arg)
+                }
+            }
+        )
+
+    })
+
+    $("#i4").on("input", function (arg) {
+        var a = $("#i4").val()
+        $.ajax({
+            url: '/check1/',
+            type: 'post',
+            data: {"name": a},
+            success: function (arg) {
+                $("#p1").text(arg).css("color", "red")
+            }
+        })
+    })
+
+    $("#b2").on("click", function (arg) {
+        var p1 = $("#p1").text();
+        var i4 = $("#i4").val();
+        $.ajax({
+            url: "/check2/",
+            type: 'post',
+            data: {"p1": p1, "i4": i4},
+            success: function (arg) {
+                {#alert(arg);#}
+                var data = JSON.parse(arg);
+                {#字典调用#}
+                var st = data['status'];
+                console.log(st);
+                {#JS数组调用#}
+                var message = data.msg;
+                if (st === 0) {
+                    swal({
+                            title: "第一种情况",
+                            text: message,
+                            type: "warning",
+                        },
+                    );
+                }
+                if (st === 1) {
+                    swal({
+                            title: "第二种情况",
+                            text: message,
+                            type: "warning",
+                        },
+                    );
+                }
+                 if (st === 2) {
+                    swal({
+                            title: "第三种情况",
+                            text: message,
+                            type: "success",
+                        },
+                    );
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>
